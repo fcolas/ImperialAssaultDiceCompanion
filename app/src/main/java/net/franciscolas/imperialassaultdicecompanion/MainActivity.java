@@ -1,7 +1,5 @@
 package net.franciscolas.imperialassaultdicecompanion;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -17,6 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,10 +38,27 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private DiceSet diceSet = null;
+
+    public DiceSet getDiceSet() {
+        return diceSet;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Load Die Definitions
+        DiceParser diceParser = new DiceParser();
+        InputStream stream = getResources().openRawResource(R.raw.dice_set);
+        try {
+            diceSet = diceParser.parse(stream);
+        } catch (XmlPullParserException xppe) {
+            System.out.println("Couldn't get resource (xml): " + xppe);
+        } catch (IOException ioe) {
+            System.out.println("Couldn't get resource (io): " + ioe);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -125,7 +145,12 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position) {
+                case 0:
+                    return new AttributeTestTabFragment();
+                default:
+                    return PlaceholderFragment.newInstance(position + 1);
+            }
         }
 
         @Override
