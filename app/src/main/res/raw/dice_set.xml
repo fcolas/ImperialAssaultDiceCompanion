@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dice>
+    <die name="blue">
+        <face
+            damage="1"
+            range="2" />
+        <face
+            surge="1"
+            range="2" />
+        <face
+            damage="2"
+            range="3" />
+        <face
+            damage="1"
+            surge="1"
+            range="3" />
+        <face
+            damage="2"
+            range="4" />
+        <face
+            damage="1"
+            range="5" />
+    </die>
+    <die name="green">
+        <face
+            surge="1"
+            range="1" />
+        <face
+            damage="1"
+            surge="1"
+            range="1" />
+        <face
+            damage="2"
+            range="1" />
+        <face
+            damage="2"
+            range="2" />
+        <face
+            damage="1"
+            surge="1"
+            range="2" />
+        <face
+            damage="2"
+            range="3" />
+    </die>
+    <die name="yellow">
+        <face
+            surge="1" />
+        <face
+            damage="1"
+            surge="2" />
+        <face
+            damage="1"
+            surge="1"
+            range="1" />
+        <face
+            damage="2"
+            range="1" />
+        <face
+            surge="1"
+            range="2" />
+        <face
+            damage="1"
+            range="2" />
+    </die>
+    <die name="red">
+        <face
+            damage="1" />
+        <face
+            damage="2" />
+        <face
+            damage="2" />
+        <face
+            damage="2"
+            surge="1" />
+        <face
+            damage="3" />
+        <face
+            damage="3" />
+    </die>
+    <die name="black">
+        <face
+            block="1" />
+        <face
+            block="1" />
+        <face
+            block="2" />
+        <face
+            block="2" />
+        <face
+            block="3" />
+        <face
+            evade="1" />
+    </die>
+    <die name="white">
+        <face />
+        <face
+            block="1" />
+        <face
+            evade="1" />
+        <face
+            block="1"
+            evade="1" />
+        <face
+            block="1"
+            evade="1" />
+        <face
+            dodge="1" />
+    </die>
+</dice>
