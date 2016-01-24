@@ -1,5 +1,12 @@
 package net.franciscolas.imperialassaultdicecompanion;
 
+import android.content.Context;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+
 /**
  * One-dimensional histogram
  */
@@ -71,5 +78,43 @@ public class Histogram1D {
         } else {
             return (float)weightedSum/(float)sum;
         }
+    }
+
+    public void populateTable(TableLayout tableLayout, String name) {
+        Context context = tableLayout.getContext();
+        LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(
+                android.widget.TableRow.LayoutParams.WRAP_CONTENT,
+                android.widget.TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow valuesRow = new TableRow(context);
+        TableRow indicesRow = new TableRow(context);
+        valuesRow.setLayoutParams(params);
+        indicesRow.setLayoutParams(params);
+        TextView nTV = new TextView(context);
+        TextView nameTV = new TextView(context);
+        nTV.setLayoutParams(trparams);
+        nameTV.setLayoutParams(trparams);
+        nTV.setPadding(5, 5, 5, 5);
+        nameTV.setPadding(5, 5, 5, 5);
+        nTV.setText(R.string.n_label);
+        nameTV.setText(name);
+        valuesRow.addView(nTV);
+        indicesRow.addView(nameTV);
+        for (int i=min; i <= max; i++) {
+            TextView vTV = new TextView(context);
+            TextView iTV = new TextView(context);
+            vTV.setLayoutParams(trparams);
+            iTV.setLayoutParams(trparams);
+            vTV.setPadding(5, 5, 5, 5);
+            iTV.setPadding(5, 5, 5, 5);
+            vTV.setText(String.valueOf(values[i - min]));
+            iTV.setText(String.valueOf(i));
+            vTV.setBackgroundColor((256 * values[i - min] / sum) << 24);
+            valuesRow.addView(vTV);
+            indicesRow.addView(iTV);
+        }
+        tableLayout.addView(valuesRow);
+        tableLayout.addView(indicesRow);
     }
 }

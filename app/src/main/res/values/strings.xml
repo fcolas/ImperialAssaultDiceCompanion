@@ -7,6 +7,7 @@
     <string name="button_plus">+</string>
     <string name="attribute_test_title">Attribute Test</string>
     <string name="attack_title">Attack</string>
+    <string name="n_label">n</string>
     <string-array name="die_number">
         <item>0</item>
         <item>1</item>

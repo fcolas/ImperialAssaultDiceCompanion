@@ -76,11 +76,35 @@
             android:imeOptions="actionDone"/>
     </LinearLayout>
 
+    <View
+        android:layout_height="5dp"
+        android:layout_width="match_parent" />
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"/>
+    <View
+        android:layout_height="5dp"
+        android:layout_width="match_parent" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/result_table" >
+    </TableLayout>
+    <View
+        android:layout_height="5dp"
+        android:layout_width="match_parent" />
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"/>
+    <View
+        android:layout_height="5dp"
+        android:layout_width="match_parent" />
     <TextView android:id="@+id/result_text"
         android:layout_weight="8"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_height="0dp"
         style="@style/TextAppearance.AppCompat.Body2" />
 
 </LinearLayout>

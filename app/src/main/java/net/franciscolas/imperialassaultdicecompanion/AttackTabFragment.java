@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -158,6 +159,11 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         float[] means = histogramDamageSurge.getAverages();
 
         // display
+        Histogram1D histogramDamage = outcomes.project1D("damage");
+        TableLayout tableLayout = (TableLayout) getView().findViewById(R.id.result_table);
+        tableLayout.removeAllViews();
+        histogramDamage.populateTable(tableLayout, "damage");
+
         TextView result_text = (TextView) getView().findViewById(R.id.result_text);
         result_text.setText(String.format(
                 "Proba to hit: %.1f %%\n" +
