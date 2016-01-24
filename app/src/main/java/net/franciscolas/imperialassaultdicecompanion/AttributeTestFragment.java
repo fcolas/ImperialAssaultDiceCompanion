@@ -113,7 +113,7 @@ public class AttributeTestFragment extends Fragment implements AdapterView.OnIte
             dice.add(diceSet.get("red"));
         }
         Outcomes outcomes = new Outcomes(dice);
-        double result = 100 * outcomes.compute_probability(new AttributeTestConstraint());
+        double result = 100 * outcomes.computeProbability(new AttributeTestConstraint());
         //int result = outcomes.outcomes.size();
         // Result
         TextView result_text = (TextView) getView().findViewById(R.id.result_text);

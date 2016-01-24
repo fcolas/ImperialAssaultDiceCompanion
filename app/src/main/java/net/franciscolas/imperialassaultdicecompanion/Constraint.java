@@ -22,3 +22,22 @@ class AttributeTestConstraint extends Constraint {
         return outcome.surge >= 1;
     }
 }
+
+class DamageConstraint extends Constraint {
+    final int damage;
+    public DamageConstraint() {
+        damage = 1;
+    }
+    public DamageConstraint(int damage) {
+        this.damage = damage;
+    }
+    public boolean eval(Outcome outcome) {
+        return outcome.damage >= damage;
+    }
+}
+
+class NoDodgeConstraint extends Constraint {
+    public boolean eval(Outcome outcome) {
+        return outcome.dodge == 0;
+    }
+}

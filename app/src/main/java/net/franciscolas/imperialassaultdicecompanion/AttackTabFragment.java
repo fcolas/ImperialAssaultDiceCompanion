@@ -1,21 +1,22 @@
 package net.franciscolas.imperialassaultdicecompanion;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttackTabFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class AttackTabFragment extends Fragment implements AdapterView.OnItemSelectedListener, TextView.OnEditorActionListener {
 
     public AttackTabFragment() {
         // Required empty public constructor
@@ -54,11 +55,21 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         Spinner number_white = (Spinner) view.findViewById(R.id.number_white);
         number_white.setAdapter(adapter);
         number_white.setOnItemSelectedListener(this);
+        EditText number_range = (EditText) view.findViewById(R.id.number_range);
+        number_range.setOnEditorActionListener(this);
         return view;
     }
-
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        recompute();
+        return true;
+    }
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        recompute();
+    }
+
+    private void recompute() {
         // Get values
         Spinner number_blue = (Spinner) getView().findViewById(R.id.number_blue);
         int n_blue = 0;
@@ -102,6 +113,13 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         } catch(NumberFormatException nfe) {
             System.out.println("Could not parse " + nfe);
         }
+        EditText number_range = (EditText) getView().findViewById(R.id.number_range);
+        int n_range = 0;
+        try {
+            n_range = Integer.parseInt(number_range.getText().toString());
+        } catch(NumberFormatException nfe) {
+            System.out.println("Could not parse " + nfe);
+        }
         // Computation
         final DiceSet diceSet = ((MainActivity) getActivity()).getDiceSet();
         List<Die> dice = new ArrayList<>();
@@ -123,15 +141,34 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         for (int i=0; i<n_white; i++) {
             dice.add(diceSet.get("white"));
         }
+        // generate and process outcomes
         Outcomes outcomes = new Outcomes(dice);
-        double result = 100 * outcomes.compute_probability(new AttributeTestConstraint());
-        //int result = outcomes.outcomes.size();
-        // Result
+        // first dodge and evade
+        outcomes.applyConstraint(new NoDodgeConstraint());
+        outcomes.applyConversion(new EvadeCancellation());
+        // here come abilities
+        // finally range and block
+        outcomes.applyConstraint(new DistanceConstraint(n_range));
+        outcomes.applyConversion(new BlockCancellation());
+
+        // compute stuff to display
+        double probaHit = 100 * outcomes.computeProbability();
+        double probaDamage = 100 * outcomes.computeProbability(new DamageConstraint());
+        Histogram2D histogramDamageSurge = outcomes.project2D("damage", "surge");
+        float[] means = histogramDamageSurge.getAverages();
+
+        // display
         TextView result_text = (TextView) getView().findViewById(R.id.result_text);
-        result_text.setText(String.format("%.1f %%", result));
+        result_text.setText(String.format(
+                "Proba to hit: %.1f %%\n" +
+                        "Proba of damage: %.1f %%\n" +
+                        "Mean damage: %.2f\n" +
+                        "Mean surge: %.2f\n",
+                probaHit, probaDamage, means[0], means[1]));
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+        recompute();
     }
 }
