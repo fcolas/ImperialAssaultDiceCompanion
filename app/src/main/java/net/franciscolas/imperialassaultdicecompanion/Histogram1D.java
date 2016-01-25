@@ -16,6 +16,7 @@ public class Histogram1D {
     private int max = 0;
     private int sum = 0;
     private int weightedSum = 0;
+    private int vMax = 0;
 
     public void put(int i, int v) {
         if (values == null) {
@@ -23,13 +24,9 @@ public class Histogram1D {
             values = new int[] {v};
             min = i;
             max = i;
-            sum = v;
-            weightedSum = i*v;
         } else if ((i <= max) && (i >= min)) {
             // value in current bounds
             values[i-min] += v;
-            sum += v;
-            weightedSum += i*v;
         } else {
             // value outside bounds
             // new bounds
@@ -49,9 +46,10 @@ public class Histogram1D {
             max = new_max;
             // updating with new value
             values[i-min] += v;
-            sum += v;
-            weightedSum += i*v;
         }
+        sum += v;
+        weightedSum += i*v;
+        vMax = Math.max(vMax, values[i-min]);
     }
 
     public int get(int i) {
@@ -101,6 +99,8 @@ public class Histogram1D {
         nameTV.setText(name);
         valuesRow.addView(nTV);
         indicesRow.addView(nameTV);
+        int factor = (int)Math.pow(10, Math.max((Math.ceil(Math.log10(vMax))-2), 0));
+        System.out.println(vMax + " " + factor);
         for (int i=min; i <= max; i++) {
             TextView vTV = new TextView(context);
             TextView iTV = new TextView(context);
@@ -108,9 +108,9 @@ public class Histogram1D {
             iTV.setLayoutParams(trparams);
             vTV.setPadding(5, 5, 5, 5);
             iTV.setPadding(5, 5, 5, 5);
-            vTV.setText(String.valueOf(values[i - min]));
+            vTV.setText(String.valueOf(values[i - min]/factor));
             iTV.setText(String.valueOf(i));
-            vTV.setBackgroundColor((256 * values[i - min] / sum) << 24);
+            vTV.setBackgroundColor((100 * values[i - min] / vMax) << 24);
             valuesRow.addView(vTV);
             indicesRow.addView(iTV);
         }

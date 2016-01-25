@@ -68,4 +68,9 @@ public class Outcome {
         return dodge + 2*(evade + 4*(block + 8*(range + 22*(surge + 11*(damage)))));
     }
 
+    @Override
+    public String toString() {
+        return String.format("(%d, %d, %d, %d, %d, %d)", damage, surge, range, block, evade, dodge);
+    }
+
 }

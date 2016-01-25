@@ -160,9 +160,12 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
 
         // display
         Histogram1D histogramDamage = outcomes.project1D("damage");
+        Histogram1D histogramSurge = outcomes.project1D("surge");
         TableLayout tableLayout = (TableLayout) getView().findViewById(R.id.result_table);
         tableLayout.removeAllViews();
         histogramDamage.populateTable(tableLayout, "damage");
+        histogramDamageSurge.populateTable(tableLayout, "damage", "surge");
+        histogramSurge.populateTable(tableLayout, "surge");
 
         TextView result_text = (TextView) getView().findViewById(R.id.result_text);
         result_text.setText(String.format(
