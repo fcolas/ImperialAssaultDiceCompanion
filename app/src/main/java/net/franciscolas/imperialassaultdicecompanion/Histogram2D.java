@@ -12,6 +12,8 @@ import android.widget.TextView;
  */
 public class Histogram2D {
     private int[][] values = null;
+    private int[] values1 = null;
+    private int[] values2 = null;
     private int min1 = 0;
     private int max1 = 0;
     private int min2 = 0;
@@ -20,11 +22,15 @@ public class Histogram2D {
     private int weightedSum1 = 0;
     private int weightedSum2 = 0;
     private int vMax = 0;
+    private int vMax1 = 0;
+    private int vMax2 = 0;
 
     public void put(int i, int j, int v) {
         if (values == null) {
             // new histogram
             values = new int[][] {{v}};
+            values1 = new int[] {v};
+            values2 = new int[] {v};
             min1 = i;
             max1 = i;
             min2 = j;
@@ -32,6 +38,8 @@ public class Histogram2D {
         } else if ((i <= max1) && (i >= min1) && (j <= max2) && (j >= min2)) {
             // value in current bounds
             values[i-min1][j-min2] += v;
+            values1[i-min1] += v;
+            values2[j-min2] += v;
         } else {
             // value outside bounds
             // new bounds
@@ -41,6 +49,8 @@ public class Histogram2D {
             int new_max2 = Math.max(max2, j);
             // new table
             int[][] new_values = new int[1+new_max1-new_min1][1+new_max2-new_min2];
+            int[] new_values1 = new int[1+new_max1-new_min1];
+            int[] new_values2 = new int[1+new_max2-new_min2];
             for (int ii=new_min1; ii <= new_max1; ii++) {
                 for (int jj=new_min2; jj <= new_max2; jj++) {
                     if ((ii <= max1) && (ii >= min1) && (jj <= max2) && (jj >= min2)) {
@@ -49,19 +59,37 @@ public class Histogram2D {
                         new_values[ii-new_min1][jj-new_min2] = 0;
                     }
                 }
+                if ((ii <= max1) && (ii >= min1)) {
+                    new_values1[ii-new_min1] = values1[ii - min1];
+                } else {
+                    new_values1[ii-new_min1] = 0;
+                }
+            }
+            for (int jj=new_min2; jj <= new_max2; jj++) {
+                if ((jj <= max2) && (jj >= min2)) {
+                    new_values2[jj - new_min2] = values2[jj - min2];
+                } else {
+                    new_values2[jj - new_min2] = 0;
+                }
             }
             values = new_values;
+            values1 = new_values1;
+            values2 = new_values2;
             min1 = new_min1;
             max1 = new_max1;
             min2 = new_min2;
             max2 = new_max2;
             // updating with new value
             values[i-min1][j-min2] += v;
+            values1[i-min1] += v;
+            values2[j-min2] += v;
         }
         sum += v;
         weightedSum1 += i*v;
         weightedSum2 += j*v;
         vMax = Math.max(vMax, values[i-min1][j-min2]);
+        vMax1 = Math.max(vMax1, values1[i-min1]);
+        vMax2 = Math.max(vMax2, values2[j-min2]);
     }
 
     public int get(int i, int j) {
@@ -100,30 +128,74 @@ public class Histogram2D {
 
     public void populateTable(TableLayout tableLayout, String name1, String name2) {
         Context context = tableLayout.getContext();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(
-                android.widget.TableRow.LayoutParams.WRAP_CONTENT,
-                android.widget.TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams trparams = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams trparamsVert = new TableRow.LayoutParams(
+                1,
+                TableRow.LayoutParams.MATCH_PARENT);
+        TableRow.LayoutParams trparamsHoriz = new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                1);
+        TableRow.LayoutParams trparams3 = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        trparams3.span = 3;
+        TableRow.LayoutParams trparamsFull = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        trparamsFull.span = 10;
+        int bg_color = context.getResources().getColor(R.color.colorPrimary);
+        int dark_color = context.getResources().getColor(R.color.black);
+        TextView empty;
+        View verticalBar;
+        View horizontalBar;
+        // first line with only header for second dimension
         TableRow header2Row = new TableRow(context);
         header2Row.setLayoutParams(params);
         TextView header2TV = new TextView(context);
-        header2TV.setLayoutParams(trparams);
+        header2TV.setLayoutParams(trparamsFull);
         header2TV.setPadding(5, 5, 5, 5);
         header2TV.setText(name2);
+        header2TV.setTextColor(dark_color);
         header2Row.addView(header2TV);
         tableLayout.addView(header2Row);
+        // main content
         int factor = (int)Math.pow(10, Math.max((Math.ceil(Math.log10(vMax))-2), 0));
-        System.out.println(vMax + " " + factor);
+        int factor1 = (int)Math.pow(10, Math.max((Math.ceil(Math.log10(vMax1))-2), 0));
+        int factor2 = (int)Math.pow(10, Math.max((Math.ceil(Math.log10(vMax2))-2), 0));
         for (int j=max2; j >= min2; j--) {
             TableRow jTR = new TableRow(context);
             jTR.setLayoutParams(params);
+            // values2[j-min2]
+            TextView v2TV = new TextView(context);
+            v2TV.setLayoutParams(trparams);
+            v2TV.setPadding(5, 5, 5, 5);
+            v2TV.setText(String.valueOf(values2[j - min2] / factor2));
+            v2TV.setBackgroundColor((100 * values2[j - min2] / vMax2) << 24);
+            jTR.addView(v2TV);
+            // |
+            verticalBar = new View(context);
+            verticalBar.setLayoutParams(trparamsVert);
+            verticalBar.setBackgroundColor(bg_color);
+            jTR.addView(verticalBar);
+            // j
             TextView jTV = new TextView(context);
             jTV.setLayoutParams(trparams);
             jTV.setPadding(5, 5, 5, 5);
             jTV.setText(String.valueOf(j));
+            jTV.setTextColor(dark_color);
             jTR.addView(jTV);
+            // |
+            verticalBar = new View(context);
+            verticalBar.setLayoutParams(trparamsVert);
+            verticalBar.setBackgroundColor(bg_color);
+            jTR.addView(verticalBar);
             for (int i=min1; i <= max1; i++) {
+                // values[i-min1][j-min2]
                 TextView vTV = new TextView(context);
                 vTV.setLayoutParams(trparams);
                 vTV.setPadding(5, 5, 5, 5);
@@ -133,24 +205,88 @@ public class Histogram2D {
             }
             tableLayout.addView(jTR);
         }
+        // --------
+        TableRow h1Row = new TableRow(context);
+        h1Row.setLayoutParams(params);
+        for (int i=min1-4; i <= max1; i++) {
+            // -
+            horizontalBar = new View(context);
+            horizontalBar.setLayoutParams(trparamsHoriz);
+            horizontalBar.setBackgroundColor(bg_color);
+            h1Row.addView(horizontalBar);
+        }
+        tableLayout.addView(h1Row);
+        // values of i and name
         TableRow header1Row = new TableRow(context);
         header1Row.setLayoutParams(params);
-        TextView empty = new TextView(context);
-        empty.setLayoutParams(trparams);
+        empty = new TextView(context);
+        empty.setLayoutParams(trparams3);
         header1Row.addView(empty);
+        // |
+        verticalBar = new View(context);
+        verticalBar.setLayoutParams(trparamsVert);
+        verticalBar.setBackgroundColor(bg_color);
+        header1Row.addView(verticalBar);
         for (int i=min1; i <= max1; i++) {
+            // i
             TextView iTV = new TextView(context);
             iTV.setLayoutParams(trparams);
             iTV.setPadding(5, 5, 5, 5);
             iTV.setText(String.valueOf(i));
+            iTV.setTextColor(dark_color);
             header1Row.addView(iTV);
         }
         TextView header1TV = new TextView(context);
         header1TV.setLayoutParams(trparams);
         header1TV.setPadding(5, 5, 5, 5);
         header1TV.setText(name1);
+        header1TV.setTextColor(dark_color);
         header1Row.addView(header1TV);
         tableLayout.addView(header1Row);
+        // --------
+        TableRow h2Row = new TableRow(context);
+        h2Row.setLayoutParams(params);
+        for (int i=0; i < 3; i++) {
+            empty = new TextView(context);
+            empty.setLayoutParams(trparamsHoriz);
+            h2Row.addView(empty);
+        }
+        // |
+//        empty = new TextView(context);
+//        empty.setLayoutParams(trparams);
+//        h2Row.addView(empty);
+        horizontalBar = new View(context);
+        horizontalBar.setLayoutParams(trparamsHoriz);
+        horizontalBar.setBackgroundColor(bg_color);
+        h2Row.addView(horizontalBar);
+        for (int i=min1; i <= max1; i++) {
+            // -
+            horizontalBar = new View(context);
+            horizontalBar.setLayoutParams(trparamsHoriz);
+            horizontalBar.setBackgroundColor(bg_color);
+            h2Row.addView(horizontalBar);
+        }
+        tableLayout.addView(h2Row);
+        // values1
+        TableRow values1Row = new TableRow(context);
+        values1Row.setLayoutParams(params);
+        empty = new TextView(context);
+        empty.setLayoutParams(trparams3);
+        values1Row.addView(empty);
+        // |
+        verticalBar = new View(context);
+        verticalBar.setLayoutParams(trparamsVert);
+        verticalBar.setBackgroundColor(bg_color);
+        values1Row.addView(verticalBar);
+        for (int i=min1; i <= max1; i++) {
+            // values1[i-min1]
+            TextView v1TV = new TextView(context);
+            v1TV.setLayoutParams(trparams);
+            v1TV.setPadding(5, 5, 5, 5);
+            v1TV.setText(String.valueOf(values1[i - min1] / factor1));
+            v1TV.setBackgroundColor((100 * values1[i - min1] / vMax1) << 24);
+            values1Row.addView(v1TV);
+        }
+        tableLayout.addView(values1Row);
     }
-
 }
