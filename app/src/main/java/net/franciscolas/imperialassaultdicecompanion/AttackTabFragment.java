@@ -58,6 +58,18 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         number_white.setOnItemSelectedListener(this);
         EditText number_range = (EditText) view.findViewById(R.id.number_range);
         number_range.setOnEditorActionListener(this);
+        EditText ability_edit1 = (EditText) view.findViewById(R.id.ability_edit1);
+        ability_edit1.setOnEditorActionListener(this);
+        EditText ability_edit2 = (EditText) view.findViewById(R.id.ability_edit2);
+        ability_edit2.setOnEditorActionListener(this);
+        EditText ability_edit3 = (EditText) view.findViewById(R.id.ability_edit3);
+        ability_edit3.setOnEditorActionListener(this);
+        EditText ability_edit4 = (EditText) view.findViewById(R.id.ability_edit4);
+        ability_edit4.setOnEditorActionListener(this);
+        EditText ability_edit5 = (EditText) view.findViewById(R.id.ability_edit5);
+        ability_edit5.setOnEditorActionListener(this);
+        EditText ability_edit6 = (EditText) view.findViewById(R.id.ability_edit6);
+        ability_edit6.setOnEditorActionListener(this);
         return view;
     }
     @Override
@@ -121,6 +133,60 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         } catch(NumberFormatException nfe) {
             System.out.println("Could not parse " + nfe);
         }
+        EditText ability_edit1 = (EditText) getView().findViewById(R.id.ability_edit1);
+        String ability_text1 = ability_edit1.getText().toString();
+        Conversion ability_conversion1= Conversion.conversionFactory(ability_text1);
+        if (ability_conversion1 != null) {
+            ability_edit1.setText(ability_conversion1.getDescription());
+            //System.out.println(ability_conversion1.getDescription());
+        } else {
+            //System.out.println("Could not parse ability: " + ability_text1);
+        }
+        EditText ability_edit2 = (EditText) getView().findViewById(R.id.ability_edit2);
+        String ability_text2 = ability_edit2.getText().toString();
+        Conversion ability_conversion2= Conversion.conversionFactory(ability_text2);
+        if (ability_conversion2 != null) {
+            ability_edit2.setText(ability_conversion2.getDescription());
+            //System.out.println(ability_conversion2.getDescription());
+        } else {
+            //System.out.println("Could not parse ability: " + ability_text2);
+        }
+        EditText ability_edit3 = (EditText) getView().findViewById(R.id.ability_edit3);
+        String ability_text3 = ability_edit3.getText().toString();
+        Conversion ability_conversion3= Conversion.conversionFactory(ability_text3);
+        if (ability_conversion3 != null) {
+            ability_edit3.setText(ability_conversion3.getDescription());
+            //System.out.println(ability_conversion3.getDescription());
+        } else {
+            //System.out.println("Could not parse ability: " + ability_text3);
+        }
+        EditText ability_edit4 = (EditText) getView().findViewById(R.id.ability_edit4);
+        String ability_text4 = ability_edit4.getText().toString();
+        Conversion ability_conversion4= Conversion.conversionFactory(ability_text4);
+        if (ability_conversion4 != null) {
+            ability_edit4.setText(ability_conversion4.getDescription());
+            //System.out.println(ability_conversion4.getDescription());
+        } else {
+            //System.out.println("Could not parse ability: " + ability_text4);
+        }
+        EditText ability_edit5 = (EditText) getView().findViewById(R.id.ability_edit5);
+        String ability_text5 = ability_edit5.getText().toString();
+        Conversion ability_conversion5= Conversion.conversionFactory(ability_text5);
+        if (ability_conversion5 != null) {
+            ability_edit5.setText(ability_conversion5.getDescription());
+            //System.out.println(ability_conversion5.getDescription());
+        } else {
+            //System.out.println("Could not parse ability: " + ability_text5);
+        }
+        EditText ability_edit6 = (EditText) getView().findViewById(R.id.ability_edit6);
+        String ability_text6 = ability_edit6.getText().toString();
+        Conversion ability_conversion6= Conversion.conversionFactory(ability_text6);
+        if (ability_conversion6 != null) {
+            ability_edit6.setText(ability_conversion6.getDescription());
+            //System.out.println(ability_conversion6.getDescription());
+        } else {
+            //System.out.println("Could not parse ability: " + ability_text6);
+        }
         // Computation
         final DiceSet diceSet = ((MainActivity) getActivity()).getDiceSet();
         List<Die> dice = new ArrayList<>();
@@ -148,6 +214,24 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         outcomes.applyConstraint(new NoDodgeConstraint());
         outcomes.applyConversion(new EvadeCancellation());
         // here come abilities
+        if (ability_conversion1 != null) {
+            outcomes.applyConversion(ability_conversion1);
+        }
+        if (ability_conversion2 != null) {
+            outcomes.applyConversion(ability_conversion2);
+        }
+        if (ability_conversion3 != null) {
+            outcomes.applyConversion(ability_conversion3);
+        }
+        if (ability_conversion4 != null) {
+            outcomes.applyConversion(ability_conversion4);
+        }
+        if (ability_conversion5 != null) {
+            outcomes.applyConversion(ability_conversion5);
+        }
+        if (ability_conversion6 != null) {
+            outcomes.applyConversion(ability_conversion6);
+        }
         // finally range and block
         outcomes.applyConstraint(new DistanceConstraint(n_range));
         outcomes.applyConversion(new BlockCancellation());

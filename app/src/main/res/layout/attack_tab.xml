@@ -88,6 +88,84 @@
         android:layout_width="match_parent" />
     <TableLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow>
+            <EditText android:id="@+id/ability_edit1"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dice_margin"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:background="@color/white"
+                android:text=""
+                android:imeOptions="actionDone" />
+            <EditText android:id="@+id/ability_edit2"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dice_margin"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:background="@color/white"
+                android:text=""
+                android:imeOptions="actionDone" />
+            <EditText android:id="@+id/ability_edit3"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dice_margin"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:background="@color/white"
+                android:text=""
+                android:imeOptions="actionDone" />
+        </TableRow>
+        <TableRow>
+            <EditText android:id="@+id/ability_edit4"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dice_margin"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:background="@color/white"
+                android:text=""
+                android:imeOptions="actionDone" />
+            <EditText android:id="@+id/ability_edit5"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dice_margin"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:background="@color/white"
+                android:text=""
+                android:imeOptions="actionDone" />
+            <EditText android:id="@+id/ability_edit6"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dice_margin"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:background="@color/white"
+                android:text=""
+                android:imeOptions="actionDone" />
+        </TableRow>
+    </TableLayout>
+    <View
+        android:layout_height="5dp"
+        android:layout_width="match_parent" />
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"/>
+    <View
+        android:layout_height="5dp"
+        android:layout_width="match_parent" />
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/result_table" >
     </TableLayout>
@@ -102,7 +180,7 @@
         android:layout_height="5dp"
         android:layout_width="match_parent" />
     <TextView android:id="@+id/result_text"
-        android:layout_weight="8"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         style="@style/TextAppearance.AppCompat.Body2" />
