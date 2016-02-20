@@ -25,6 +25,7 @@ public abstract class Conversion {
         int plus_dmg = 0;
         int plus_range = 0;
         int pierce = 0;
+        int plus_surge = 0;
         while (consequence_matches.find()) {
             String number = consequence_matches.group(1);
             if (number.startsWith("+")) {
@@ -46,12 +47,16 @@ public abstract class Conversion {
                 case "pierce":
                     pierce += bonus;
                     break;
+                case "surge":
+                case "srg":
+                case "s":
+                    plus_surge += bonus;
                 default:
                     //System.out.println("Cannot parse: '" + name + "'");
             }
         }
         // checking there is some effect
-        if ((plus_dmg + plus_range + pierce) == 0) {
+        if ((plus_dmg + plus_range + pierce + plus_surge) == 0) {
             return null;
         }
         // build description
@@ -71,11 +76,15 @@ public abstract class Conversion {
         }
         if (pierce != 0) {
             description += delimiter + String.format("+%dpierce", pierce);
+            delimiter = ", ";
+        }
+        if (plus_surge != 0) {
+            description += delimiter + String.format("+%dsurge", plus_surge);
         }
         if (isEffect) {
-            return new GenericEffect(plus_dmg, plus_range, pierce, description);
+            return new GenericEffect(plus_dmg, plus_range, pierce, plus_surge, description);
         } else {
-            return new GenericConversion(plus_dmg, plus_range, pierce, description);
+            return new GenericConversion(plus_dmg, plus_range, pierce, plus_surge, description);
         }
     }
 }
@@ -84,16 +93,18 @@ class GenericConversion extends Conversion {
     private int plus_dmg;
     private int plus_range;
     private int pierce;
-    public GenericConversion(int plus_dmg, int plus_range, int pierce,
+    private int plus_surge;
+    public GenericConversion(int plus_dmg, int plus_range, int pierce, int plus_surge,
                              String description) {
         this.description = description;
         this.plus_dmg = plus_dmg;
         this.plus_range = plus_range;
         this.pierce = pierce;
+        this.plus_surge = plus_surge;
     }
     public Outcome convert(Outcome outcome) {
         return new Outcome(outcome.damage + plus_dmg,
-                outcome.surge,
+                outcome.surge + plus_surge,
                 outcome.range + plus_range,
                 Math.max(outcome.block - pierce, 0),
                 outcome.evade,
@@ -105,17 +116,19 @@ class GenericEffect extends Conversion {
     private int plus_dmg;
     private int plus_range;
     private int pierce;
-    public GenericEffect(int plus_dmg, int plus_range, int pierce,
+    private int plus_surge;
+    public GenericEffect(int plus_dmg, int plus_range, int pierce, int plus_surge,
                              String description) {
         this.description = description;
         this.plus_dmg = plus_dmg;
         this.plus_range = plus_range;
         this.pierce = pierce;
+        this.plus_surge = plus_surge;
     }
     public Outcome convert(Outcome outcome) {
         if (outcome.surge >= 1) {
             return new Outcome(outcome.damage + plus_dmg,
-                    outcome.surge - 1,
+                    outcome.surge - 1 + plus_surge,  // the semantic is weird, here
                     outcome.range + plus_range,
                     Math.max(outcome.block - pierce, 0),
                     outcome.evade,
