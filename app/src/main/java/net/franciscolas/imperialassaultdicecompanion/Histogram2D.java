@@ -102,6 +102,38 @@ public class Histogram2D {
         }
     }
 
+    public int getPercent(int i, int j) {
+        return (100 * get(i, j))/sum;
+    }
+
+    public int get1(int i) {
+        if (values1 == null) {
+            return 0;
+        } else if ((i <= max1) && (i >= min1)) {
+            return values1[i-min1];
+        } else {
+            return 0;
+        }
+    }
+
+    public int getPercent1(int i) {
+        return (100 * get1(i))/sum;
+    }
+
+    public int get2(int j) {
+        if (values2 == null) {
+            return 0;
+        } else if ((j <= max2) && (j >= min2)) {
+            return values2[j-min2];
+        } else {
+            return 0;
+        }
+    }
+
+    public int getPercent2(int j) {
+        return (100 * get2(j))/sum;
+    }
+
     public int getMin1() {
         return min1;
     }
@@ -164,9 +196,6 @@ public class Histogram2D {
         header2Row.addView(header2TV);
         tableLayout.addView(header2Row);
         // main content
-        int factor = (int)Math.pow(10, Math.max((Math.ceil(Math.log10(vMax))-2), 0));
-        int factor1 = (int)Math.pow(10, Math.max((Math.ceil(Math.log10(vMax1))-2), 0));
-        int factor2 = (int)Math.pow(10, Math.max((Math.ceil(Math.log10(vMax2))-2), 0));
         for (int j=max2; j >= min2; j--) {
             TableRow jTR = new TableRow(context);
             jTR.setLayoutParams(params);
@@ -174,8 +203,8 @@ public class Histogram2D {
             TextView v2TV = new TextView(context);
             v2TV.setLayoutParams(trparams);
             v2TV.setPadding(5, 5, 5, 5);
-            v2TV.setText(String.valueOf(values2[j - min2] / factor2));
-            v2TV.setBackgroundColor((100 * values2[j - min2] / vMax2) << 24);
+            v2TV.setText(String.format("% 2d", getPercent2(j)));
+            v2TV.setBackgroundColor((100*get2(j)/vMax2) << 24);
             jTR.addView(v2TV);
             // |
             verticalBar = new View(context);
@@ -199,8 +228,8 @@ public class Histogram2D {
                 TextView vTV = new TextView(context);
                 vTV.setLayoutParams(trparams);
                 vTV.setPadding(5, 5, 5, 5);
-                vTV.setText(String.valueOf(values[i-min1][j-min2]/factor));
-                vTV.setBackgroundColor((100 * values[i-min1][j-min2] / vMax) << 24);
+                vTV.setText(String.format("% 2d", getPercent(i, j)));
+                vTV.setBackgroundColor((100*get(i, j)/vMax) << 24);
                 jTR.addView(vTV);
             }
             tableLayout.addView(jTR);
@@ -283,8 +312,8 @@ public class Histogram2D {
             TextView v1TV = new TextView(context);
             v1TV.setLayoutParams(trparams);
             v1TV.setPadding(5, 5, 5, 5);
-            v1TV.setText(String.valueOf(values1[i - min1] / factor1));
-            v1TV.setBackgroundColor((100 * values1[i - min1] / vMax1) << 24);
+            v1TV.setText(String.format("% 2d", getPercent1(i)));
+            v1TV.setBackgroundColor((100*get1(i)/vMax1) << 24);
             values1Row.addView(v1TV);
         }
         tableLayout.addView(values1Row);

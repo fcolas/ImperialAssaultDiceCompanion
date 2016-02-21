@@ -62,6 +62,10 @@ public class Histogram1D {
         }
     }
 
+    public int getPercent(int i) {
+        return (100 * get(i)) / sum;
+    }
+
     public int getMin() {
         return min;
     }
