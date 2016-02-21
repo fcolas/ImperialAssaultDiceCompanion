@@ -203,7 +203,7 @@ public class Histogram2D {
             TextView v2TV = new TextView(context);
             v2TV.setLayoutParams(trparams);
             v2TV.setPadding(5, 5, 5, 5);
-            v2TV.setText(String.format("% 2d", getPercent2(j)));
+            v2TV.setText(String.format("%2d", getPercent2(j)));
             v2TV.setBackgroundColor((100*get2(j)/vMax2) << 24);
             jTR.addView(v2TV);
             // |
@@ -215,7 +215,7 @@ public class Histogram2D {
             TextView jTV = new TextView(context);
             jTV.setLayoutParams(trparams);
             jTV.setPadding(5, 5, 5, 5);
-            jTV.setText(String.valueOf(j));
+            jTV.setText(String.format("%2d", j));
             jTV.setTextColor(dark_color);
             jTR.addView(jTV);
             // |
@@ -228,7 +228,7 @@ public class Histogram2D {
                 TextView vTV = new TextView(context);
                 vTV.setLayoutParams(trparams);
                 vTV.setPadding(5, 5, 5, 5);
-                vTV.setText(String.format("% 2d", getPercent(i, j)));
+                vTV.setText(String.format("%02d", getPercent(i, j)));
                 vTV.setBackgroundColor((100*get(i, j)/vMax) << 24);
                 jTR.addView(vTV);
             }
@@ -261,7 +261,7 @@ public class Histogram2D {
             TextView iTV = new TextView(context);
             iTV.setLayoutParams(trparams);
             iTV.setPadding(5, 5, 5, 5);
-            iTV.setText(String.valueOf(i));
+            iTV.setText(String.format("%2d", i));
             iTV.setTextColor(dark_color);
             header1Row.addView(iTV);
         }
@@ -312,7 +312,7 @@ public class Histogram2D {
             TextView v1TV = new TextView(context);
             v1TV.setLayoutParams(trparams);
             v1TV.setPadding(5, 5, 5, 5);
-            v1TV.setText(String.format("% 2d", getPercent1(i)));
+            v1TV.setText(String.format("%2d", getPercent1(i)));
             v1TV.setBackgroundColor((100*get1(i)/vMax1) << 24);
             values1Row.addView(v1TV);
         }
