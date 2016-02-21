@@ -22,6 +22,19 @@ public class Histogram2D {
     private int weightedSum1 = 0;
     private int weightedSum2 = 0;
     private int vMax = 0;
+
+    public int getvMax() {
+        return vMax;
+    }
+
+    public int getvMax1() {
+        return vMax1;
+    }
+
+    public int getvMax2() {
+        return vMax2;
+    }
+
     private int vMax1 = 0;
     private int vMax2 = 0;
 
@@ -150,6 +163,10 @@ public class Histogram2D {
         return max2;
     }
 
+    public int getSum() {
+        return sum;
+    }
+
     public float[] getAverages() {
         if (sum == 0) {
             return new float[] {0, 0};
@@ -203,7 +220,7 @@ public class Histogram2D {
             TextView v2TV = new TextView(context);
             v2TV.setLayoutParams(trparams);
             v2TV.setPadding(5, 5, 5, 5);
-            v2TV.setText(String.format("%2d", getPercent2(j)));
+            v2TV.setText(String.format("%02d", getPercent2(j)));
             v2TV.setBackgroundColor((100*get2(j)/vMax2) << 24);
             jTR.addView(v2TV);
             // |
@@ -312,7 +329,7 @@ public class Histogram2D {
             TextView v1TV = new TextView(context);
             v1TV.setLayoutParams(trparams);
             v1TV.setPadding(5, 5, 5, 5);
-            v1TV.setText(String.format("%2d", getPercent1(i)));
+            v1TV.setText(String.format("%20d", getPercent1(i)));
             v1TV.setBackgroundColor((100*get1(i)/vMax1) << 24);
             values1Row.addView(v1TV);
         }

@@ -1,5 +1,6 @@
 package net.franciscolas.imperialassaultdicecompanion;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
@@ -9,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -155,6 +158,10 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
                         "Mean surge: %.2f\n" +
                         "Mean range: %.2f\n",
                 probaHit_second, probaDamage_second, means_second[0], means_second[1], mean_range_second));
+
+        TableLayout tableLayout = (TableLayout) getView().findViewById(R.id.result_table);
+        tableLayout.removeAllViews();
+        populateTable(tableLayout, histogramDamageSurge_first, histogramDamageSurge_second, "dmg", "surge");
     }
 
     private Outcomes computeOutcomes(int id_blue, int id_green, int id_yellow, int id_red,
@@ -312,6 +319,201 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
 //        outcomes.applyConstraint(new DistanceConstraint(n_range));
         outcomes.applyConversion(new BlockCancellation());
         return outcomes;
+    }
+
+    private void populateTable(TableLayout tableLayout, Histogram2D h1, Histogram2D h2,
+                               String name1, String name2) {
+        Context context = tableLayout.getContext();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams trparams = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams trparamsVert = new TableRow.LayoutParams(
+                1,
+                TableRow.LayoutParams.MATCH_PARENT);
+        TableRow.LayoutParams trparamsHoriz = new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                1);
+        TableRow.LayoutParams trparams3 = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        trparams3.span = 3;
+        TableRow.LayoutParams trparamsFull = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        trparamsFull.span = 10;
+        int bg_color = context.getResources().getColor(R.color.colorPrimary);
+        int dark_color = context.getResources().getColor(R.color.black);
+        TextView empty;
+        View verticalBar;
+        View horizontalBar;
+        // first line with only header for second dimension
+        TableRow header2Row = new TableRow(context);
+        header2Row.setLayoutParams(params);
+        TextView header2TV = new TextView(context);
+        header2TV.setLayoutParams(trparamsFull);
+        header2TV.setPadding(5, 5, 5, 5);
+        header2TV.setText(name2);
+        header2TV.setTextColor(dark_color);
+        header2Row.addView(header2TV);
+        tableLayout.addView(header2Row);
+        int min1 = Math.min(h1.getMin1(), h2.getMin1());
+        int max1 = Math.max(h1.getMax1(), h2.getMax1());
+        int min2 = Math.min(h1.getMin2(), h2.getMin2());
+        int max2 = Math.max(h1.getMax2(), h2.getMax2());
+        int v1, v2, vc1, vc2, a, r, g, b;
+        int pMax1 = Math.max(100*h1.getvMax1()/h1.getSum(), 100*h2.getvMax1()/h2.getSum());
+        int pMax2 = Math.max(100*h1.getvMax2()/h1.getSum(), 100*h2.getvMax2()/h2.getSum());
+        int pMax = Math.max(100*h1.getvMax()/h1.getSum(), 100*h2.getvMax()/h2.getSum());
+        int ctrst = 100;
+        // main content
+        for (int j=max2; j >= min2; j--) {
+            TableRow jTR = new TableRow(context);
+            jTR.setLayoutParams(params);
+            // values2[j-min2]
+            TextView v2TV = new TextView(context);
+            v2TV.setLayoutParams(trparams);
+            v2TV.setPadding(5, 5, 5, 5);
+            v1 = h1.getPercent2(j);
+            v2 = h2.getPercent2(j);
+            vc1 = ctrst*v1/pMax2;
+            vc2 = ctrst*v2/pMax2;
+            a = Math.min(255, Math.max(vc1, vc2));
+            r = Math.min(255, 10 * Math.max(vc2 - vc1, 0) + Math.min(vc1, vc2));
+            g = Math.min(255, Math.min(vc1, vc2));
+            b = Math.min(255, 10*Math.max(vc1 - vc2, 0) + Math.min(vc1, vc2));
+            v2TV.setText(String.format("%02d/%02d", v1, v2));
+            v2TV.setBackgroundColor(a << 24 | r << 16 | g << 8 | b );
+            jTR.addView(v2TV);
+            // |
+            verticalBar = new View(context);
+            verticalBar.setLayoutParams(trparamsVert);
+            verticalBar.setBackgroundColor(bg_color);
+            jTR.addView(verticalBar);
+            // j
+            TextView jTV = new TextView(context);
+            jTV.setLayoutParams(trparams);
+            jTV.setPadding(5, 5, 5, 5);
+            jTV.setText(String.format("%2d", j));
+            jTV.setTextColor(dark_color);
+            jTR.addView(jTV);
+            // |
+            verticalBar = new View(context);
+            verticalBar.setLayoutParams(trparamsVert);
+            verticalBar.setBackgroundColor(bg_color);
+            jTR.addView(verticalBar);
+            for (int i=min1; i <= max1; i++) {
+                // values[i-min1][j-min2]
+                TextView vTV = new TextView(context);
+                vTV.setLayoutParams(trparams);
+                vTV.setPadding(5, 5, 5, 5);
+                v1 = h1.getPercent(i, j);
+                v2 = h2.getPercent(i, j);
+                vc1 = ctrst*v1/pMax;
+                vc2 = ctrst*v2/pMax;
+                a = Math.min(255, Math.max(vc1, vc2));
+                r = Math.min(255, 10*Math.max(vc2 - vc1, 0) + Math.min(vc1, vc2));
+                g = Math.min(255, Math.min(vc1, vc2));
+                b = Math.min(255, 10*Math.max(vc1 - vc2, 0) + Math.min(vc1, vc2));
+                vTV.setText(String.format("%02d/%02d", v1, v2));
+                vTV.setBackgroundColor(a << 24 | r << 16 | g << 8 | b );
+                jTR.addView(vTV);
+            }
+            tableLayout.addView(jTR);
+        }
+        // --------
+        TableRow h1Row = new TableRow(context);
+        h1Row.setLayoutParams(params);
+        for (int i=min1-4; i <= max1; i++) {
+            // -
+            horizontalBar = new View(context);
+            horizontalBar.setLayoutParams(trparamsHoriz);
+            horizontalBar.setBackgroundColor(bg_color);
+            h1Row.addView(horizontalBar);
+        }
+        tableLayout.addView(h1Row);
+        // values of i and name
+        TableRow header1Row = new TableRow(context);
+        header1Row.setLayoutParams(params);
+        empty = new TextView(context);
+        empty.setLayoutParams(trparams3);
+        header1Row.addView(empty);
+        // |
+        verticalBar = new View(context);
+        verticalBar.setLayoutParams(trparamsVert);
+        verticalBar.setBackgroundColor(bg_color);
+        header1Row.addView(verticalBar);
+        for (int i=min1; i <= max1; i++) {
+            // i
+            TextView iTV = new TextView(context);
+            iTV.setLayoutParams(trparams);
+            iTV.setPadding(5, 5, 5, 5);
+            iTV.setText(String.format("%2d", i));
+            iTV.setTextColor(dark_color);
+            header1Row.addView(iTV);
+        }
+        TextView header1TV = new TextView(context);
+        header1TV.setLayoutParams(trparams);
+        header1TV.setPadding(5, 5, 5, 5);
+        header1TV.setText(name1);
+        header1TV.setTextColor(dark_color);
+        header1Row.addView(header1TV);
+        tableLayout.addView(header1Row);
+        // --------
+        TableRow h2Row = new TableRow(context);
+        h2Row.setLayoutParams(params);
+        for (int i=0; i < 3; i++) {
+            empty = new TextView(context);
+            empty.setLayoutParams(trparamsHoriz);
+            h2Row.addView(empty);
+        }
+        // |
+//        empty = new TextView(context);
+//        empty.setLayoutParams(trparams);
+//        h2Row.addView(empty);
+        horizontalBar = new View(context);
+        horizontalBar.setLayoutParams(trparamsHoriz);
+        horizontalBar.setBackgroundColor(bg_color);
+        h2Row.addView(horizontalBar);
+        for (int i=min1; i <= max1; i++) {
+            // -
+            horizontalBar = new View(context);
+            horizontalBar.setLayoutParams(trparamsHoriz);
+            horizontalBar.setBackgroundColor(bg_color);
+            h2Row.addView(horizontalBar);
+        }
+        tableLayout.addView(h2Row);
+        // values1
+        TableRow values1Row = new TableRow(context);
+        values1Row.setLayoutParams(params);
+        empty = new TextView(context);
+        empty.setLayoutParams(trparams3);
+        values1Row.addView(empty);
+        // |
+        verticalBar = new View(context);
+        verticalBar.setLayoutParams(trparamsVert);
+        verticalBar.setBackgroundColor(bg_color);
+        values1Row.addView(verticalBar);
+        for (int i=min1; i <= max1; i++) {
+            // values1[i-min1]
+            TextView v1TV = new TextView(context);
+            v1TV.setLayoutParams(trparams);
+            v1TV.setPadding(5, 5, 5, 5);
+            v1 = h1.getPercent1(i);
+            v2 = h2.getPercent1(i);
+            vc1 = ctrst*v1/pMax1;
+            vc2 = ctrst*v2/pMax1;
+            a = Math.min(255, Math.max(vc1, vc2));
+            r = Math.min(255, 10 * Math.max(vc2 - vc1, 0) + Math.min(vc1, vc2));
+            g = Math.min(255, Math.min(vc1, vc2));
+            b = Math.min(255, 10*Math.max(vc1 - vc2, 0) + Math.min(vc1, vc2));
+            v1TV.setText(String.format("%02d/%02d", v1, v2));
+            v1TV.setBackgroundColor(a << 24 | r << 16 | g << 8 | b );
+            values1Row.addView(v1TV);
+        }
+        tableLayout.addView(values1Row);
     }
 
     @Override

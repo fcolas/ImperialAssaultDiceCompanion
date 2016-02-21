@@ -248,7 +248,7 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         TableLayout tableLayout = (TableLayout) getView().findViewById(R.id.result_table);
         tableLayout.removeAllViews();
 //        histogramDamage.populateTable(tableLayout, "damage");
-        histogramDamageSurge.populateTable(tableLayout, "damage", "surge");
+        histogramDamageSurge.populateTable(tableLayout, "dmg", "surge");
 //        histogramSurge.populateTable(tableLayout, "surge");
 
         TextView result_text = (TextView) getView().findViewById(R.id.result_text);
