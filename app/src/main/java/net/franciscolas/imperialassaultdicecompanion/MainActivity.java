@@ -149,9 +149,11 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new AttributeTestTabFragment();
                 case 1:
+                case 3:
                     return new AttackTabFragment();
                 case 2:
-                    return new AttackTabFragment();
+                case 4:
+                    return new CompareTabFragment();
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 5;
         }
 
         @Override
