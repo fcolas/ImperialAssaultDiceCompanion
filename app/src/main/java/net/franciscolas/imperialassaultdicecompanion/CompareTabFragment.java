@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CompareTabFragment extends Fragment implements AdapterView.OnItemSelectedListener, TextView.OnEditorActionListener {
 
@@ -104,6 +106,13 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
         //ability_edit.setOnEditorActionListener(this);
         //ability_edit = (EditText) view.findViewById(R.id.ability_edit6_second);
         //ability_edit.setOnEditorActionListener(this);
+        ArrayAdapter<CharSequence> graph_spinner_adapter = ArrayAdapter.createFromResource(
+                getActivity(),
+                R.array.graph_type,
+                android.R.layout.simple_spinner_dropdown_item);
+        spinner = (Spinner) view.findViewById(R.id.graph_spinner);
+        spinner.setAdapter(graph_spinner_adapter);
+        spinner.setOnItemSelectedListener(this);
         return view;
     }
     @Override
@@ -128,10 +137,12 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
         // general stats first
         double probaHit_first = 100 * outcomes_first.computeProbability();
         double probaDamage_first = 100 * outcomes_first.computeProbability(new DamageConstraint());
+        Histogram1D histogramDamage_first = outcomes_first.project1D("damage");
+        float mean_damage_first = histogramDamage_first.getAverage();
+        Histogram1D histogramSurge_first = outcomes_first.project1D("surge");
+        float mean_surge_first = histogramSurge_first.getAverage();
         Histogram1D histogramRange_first = outcomes_first.project1D("range");
         float mean_range_first = histogramRange_first.getAverage();
-        Histogram2D histogramDamageSurge_first = outcomes_first.project2D("damage", "surge");
-        float[] means_first = histogramDamageSurge_first.getAverages();
 
         TextView result_text_first = (TextView) getView().findViewById(R.id.result_text_first);
         result_text_first.setText(String.format(
@@ -140,15 +151,17 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
                         "Mean damage: %.2f\n" +
                         "Mean surge: %.2f\n" +
                         "Mean range: %.2f\n",
-                probaHit_first, probaDamage_first, means_first[0], means_first[1], mean_range_first));
+                probaHit_first, probaDamage_first, mean_damage_first, mean_surge_first, mean_range_first));
         
         // general stats second
         double probaHit_second = 100 * outcomes_second.computeProbability();
         double probaDamage_second = 100 * outcomes_second.computeProbability(new DamageConstraint());
+        Histogram1D histogramDamage_second = outcomes_second.project1D("damage");
+        float mean_damage_second = histogramDamage_second.getAverage();
+        Histogram1D histogramSurge_second = outcomes_second.project1D("surge");
+        float mean_surge_second = histogramSurge_second.getAverage();
         Histogram1D histogramRange_second = outcomes_second.project1D("range");
         float mean_range_second = histogramRange_second.getAverage();
-        Histogram2D histogramDamageSurge_second = outcomes_second.project2D("damage", "surge");
-        float[] means_second = histogramDamageSurge_second.getAverages();
 
         TextView result_text_second = (TextView) getView().findViewById(R.id.result_text_second);
         result_text_second.setText(String.format(
@@ -157,11 +170,23 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
                         "Mean damage: %.2f\n" +
                         "Mean surge: %.2f\n" +
                         "Mean range: %.2f\n",
-                probaHit_second, probaDamage_second, means_second[0], means_second[1], mean_range_second));
+                probaHit_second, probaDamage_second, mean_damage_second, mean_surge_second, mean_range_second));
+
+        Spinner graph_spinner = (Spinner) getView().findViewById(R.id.graph_spinner);
+        String choice = graph_spinner.getSelectedItem().toString();
+        Pattern graph_pattern = Pattern.compile("(\\w*) vs (\\w*)");
+        Matcher graph_matches = graph_pattern.matcher(choice.toLowerCase());
+        if (!graph_matches.find()) {
+            return;
+        }
+        String x_dim = graph_matches.group(2);
+        String y_dim = graph_matches.group(1);
+        Histogram2D histogram_first = outcomes_first.project2D(x_dim, y_dim);
+        Histogram2D histogram_second = outcomes_second.project2D(x_dim, y_dim);
 
         TableLayout tableLayout = (TableLayout) getView().findViewById(R.id.result_table);
         tableLayout.removeAllViews();
-        populateTable(tableLayout, histogramDamageSurge_first, histogramDamageSurge_second, "dmg", "surge");
+        populateTable(tableLayout, histogram_first, histogram_second, x_dim, y_dim);
     }
 
     private Outcomes computeOutcomes(int id_blue, int id_green, int id_yellow, int id_red,
@@ -384,7 +409,8 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
             r = Math.min(255, 10 * Math.max(vc2 - vc1, 0) + Math.min(vc1, vc2));
             g = Math.min(255, Math.min(vc1, vc2));
             b = Math.min(255, 10*Math.max(vc1 - vc2, 0) + Math.min(vc1, vc2));
-            v2TV.setText(String.format("%02d/%02d", v1, v2));
+//            v2TV.setText(String.format("%02d/%02d", v1, v2));
+            v2TV.setText(String.format("%+02d", v2 - v1));
             v2TV.setBackgroundColor(a << 24 | r << 16 | g << 8 | b );
             jTR.addView(v2TV);
             // |
@@ -417,7 +443,8 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
                 r = Math.min(255, 10*Math.max(vc2 - vc1, 0) + Math.min(vc1, vc2));
                 g = Math.min(255, Math.min(vc1, vc2));
                 b = Math.min(255, 10*Math.max(vc1 - vc2, 0) + Math.min(vc1, vc2));
-                vTV.setText(String.format("%02d/%02d", v1, v2));
+//                vTV.setText(String.format("%02d/%02d", v1, v2));
+                vTV.setText(String.format("%+02d", v2 - v1));
                 vTV.setBackgroundColor(a << 24 | r << 16 | g << 8 | b );
                 jTR.addView(vTV);
             }
@@ -509,7 +536,8 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
             r = Math.min(255, 10 * Math.max(vc2 - vc1, 0) + Math.min(vc1, vc2));
             g = Math.min(255, Math.min(vc1, vc2));
             b = Math.min(255, 10*Math.max(vc1 - vc2, 0) + Math.min(vc1, vc2));
-            v1TV.setText(String.format("%02d/%02d", v1, v2));
+//            v1TV.setText(String.format("%02d/%02d", v1, v2));
+            v1TV.setText(String.format("%+02d", v2 - v1));
             v1TV.setBackgroundColor(a << 24 | r << 16 | g << 8 | b );
             values1Row.addView(v1TV);
         }

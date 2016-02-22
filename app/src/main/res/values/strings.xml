@@ -15,4 +15,12 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string-array name="graph_type">
+        <item>Surge vs Damage</item>
+        <item>Range vs Damage</item>
+        <item>Range vs Surge</item>
+        <item>Damage vs Surge</item>
+        <item>Damage vs Range</item>
+        <item>Surge vs Range</item>
+    </string-array>
 </resources>
