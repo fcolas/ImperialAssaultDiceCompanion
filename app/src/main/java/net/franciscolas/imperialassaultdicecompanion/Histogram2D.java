@@ -329,7 +329,7 @@ public class Histogram2D {
             TextView v1TV = new TextView(context);
             v1TV.setLayoutParams(trparams);
             v1TV.setPadding(5, 5, 5, 5);
-            v1TV.setText(String.format("%20d", getPercent1(i)));
+            v1TV.setText(String.format("%02d", getPercent1(i)));
             v1TV.setBackgroundColor((100*get1(i)/vMax1) << 24);
             values1Row.addView(v1TV);
         }
