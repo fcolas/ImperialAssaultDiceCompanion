@@ -133,13 +133,17 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         } catch(NumberFormatException nfe) {
             System.out.println("Could not parse " + nfe);
         }
+        int valid_color = getContext().getResources().getColor(R.color.valid_ability);
+        int invalid_color = getContext().getResources().getColor(R.color.invalid_ability);
         EditText ability_edit1 = (EditText) getView().findViewById(R.id.ability_edit1);
         String ability_text1 = ability_edit1.getText().toString();
         Conversion ability_conversion1= Conversion.conversionFactory(ability_text1);
         if (ability_conversion1 != null) {
             ability_edit1.setText(ability_conversion1.getDescription());
+            ability_edit1.setTextColor(valid_color);
             //System.out.println(ability_conversion1.getDescription());
         } else {
+            ability_edit1.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text1);
         }
         EditText ability_edit2 = (EditText) getView().findViewById(R.id.ability_edit2);
@@ -147,8 +151,10 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         Conversion ability_conversion2= Conversion.conversionFactory(ability_text2);
         if (ability_conversion2 != null) {
             ability_edit2.setText(ability_conversion2.getDescription());
+            ability_edit2.setTextColor(valid_color);
             //System.out.println(ability_conversion2.getDescription());
         } else {
+            ability_edit2.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text2);
         }
         EditText ability_edit3 = (EditText) getView().findViewById(R.id.ability_edit3);
@@ -156,8 +162,10 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         Conversion ability_conversion3= Conversion.conversionFactory(ability_text3);
         if (ability_conversion3 != null) {
             ability_edit3.setText(ability_conversion3.getDescription());
+            ability_edit3.setTextColor(valid_color);
             //System.out.println(ability_conversion3.getDescription());
         } else {
+            ability_edit3.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text3);
         }
         EditText ability_edit4 = (EditText) getView().findViewById(R.id.ability_edit4);
@@ -165,8 +173,10 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         Conversion ability_conversion4= Conversion.conversionFactory(ability_text4);
         if (ability_conversion4 != null) {
             ability_edit4.setText(ability_conversion4.getDescription());
+            ability_edit4.setTextColor(valid_color);
             //System.out.println(ability_conversion4.getDescription());
         } else {
+            ability_edit4.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text4);
         }
         EditText ability_edit5 = (EditText) getView().findViewById(R.id.ability_edit5);
@@ -174,8 +184,10 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         Conversion ability_conversion5= Conversion.conversionFactory(ability_text5);
         if (ability_conversion5 != null) {
             ability_edit5.setText(ability_conversion5.getDescription());
+            ability_edit5.setTextColor(valid_color);
             //System.out.println(ability_conversion5.getDescription());
         } else {
+            ability_edit5.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text5);
         }
         EditText ability_edit6 = (EditText) getView().findViewById(R.id.ability_edit6);
@@ -183,8 +195,10 @@ public class AttackTabFragment extends Fragment implements AdapterView.OnItemSel
         Conversion ability_conversion6= Conversion.conversionFactory(ability_text6);
         if (ability_conversion6 != null) {
             ability_edit6.setText(ability_conversion6.getDescription());
+            ability_edit6.setTextColor(valid_color);
             //System.out.println(ability_conversion6.getDescription());
         } else {
+            ability_edit6.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text6);
         }
         // Computation

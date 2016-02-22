@@ -10,7 +10,9 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="first">#00b0ff</color>
-    <color name="background_first">#1f00b0ff</color>
+    <color name="background_first">#1f1565c0</color>
     <color name="second">#ff1744</color>
-    <color name="background_second">#1fff1744</color>
+    <color name="background_second">#1fc62828</color>
+    <color name="valid_ability">#1b5e20</color>
+    <color name="invalid_ability">#b71c1c</color>
 </resources>

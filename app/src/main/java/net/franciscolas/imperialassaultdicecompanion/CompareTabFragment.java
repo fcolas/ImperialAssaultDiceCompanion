@@ -241,13 +241,17 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
         } catch(NumberFormatException nfe) {
             System.out.println("Could not parse " + nfe);
         }*/
-        EditText ability_edit = (EditText) getView().findViewById(id_ab1);
-        String ability_text1 = ability_edit.getText().toString();
+        int valid_color = getContext().getResources().getColor(R.color.valid_ability);
+        int invalid_color = getContext().getResources().getColor(R.color.invalid_ability);
+        EditText ability_edit1 = (EditText) getView().findViewById(id_ab1);
+        String ability_text1 = ability_edit1.getText().toString();
         Conversion ability_conversion1= Conversion.conversionFactory(ability_text1);
         if (ability_conversion1 != null) {
-            ability_edit.setText(ability_conversion1.getDescription());
+            ability_edit1.setText(ability_conversion1.getDescription());
+            ability_edit1.setTextColor(valid_color);
             //System.out.println(ability_conversion1.getDescription());
         } else {
+            ability_edit1.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text1);
         }
         EditText ability_edit2 = (EditText) getView().findViewById(id_ab2);
@@ -255,8 +259,10 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
         Conversion ability_conversion2= Conversion.conversionFactory(ability_text2);
         if (ability_conversion2 != null) {
             ability_edit2.setText(ability_conversion2.getDescription());
+            ability_edit2.setTextColor(valid_color);
             //System.out.println(ability_conversion2.getDescription());
         } else {
+            ability_edit2.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text2);
         }
         EditText ability_edit3 = (EditText) getView().findViewById(id_ab3);
@@ -264,8 +270,10 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
         Conversion ability_conversion3= Conversion.conversionFactory(ability_text3);
         if (ability_conversion3 != null) {
             ability_edit3.setText(ability_conversion3.getDescription());
+            ability_edit3.setTextColor(valid_color);
             //System.out.println(ability_conversion3.getDescription());
         } else {
+            ability_edit3.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text3);
         }
         EditText ability_edit4 = (EditText) getView().findViewById(id_ab4);
@@ -273,8 +281,10 @@ public class CompareTabFragment extends Fragment implements AdapterView.OnItemSe
         Conversion ability_conversion4= Conversion.conversionFactory(ability_text4);
         if (ability_conversion4 != null) {
             ability_edit4.setText(ability_conversion4.getDescription());
+            ability_edit4.setTextColor(valid_color);
             //System.out.println(ability_conversion4.getDescription());
         } else {
+            ability_edit4.setTextColor(invalid_color);
             //System.out.println("Could not parse ability: " + ability_text4);
         }
         /*EditText ability_edit5 = (EditText) getView().findViewById(id_ab5);
