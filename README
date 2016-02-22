@@ -1,0 +1,15 @@
+Companion app for Imperial Assault.
+It can do three things:
+- tell the probability of attribute test for a given set of dice,
+- show the 2D histogram of outcomes based on the attack and defense dice (and range),
+- help compare two weapons.
+
+It's possible to input some abilities in the text fields bellow the attack dice:
+- starting with "s" it will be an effect consuming 1 surge;
+- effects are [+]number type with type in "dmg", "damage", "prec", "precision", "rng", "range", "surge", "pierce";
+- effects can be separated with commas.
+
+Examples:
+- "+1dmg": always +1 damage,
+- "S: +1dmg": +1 damage for 1 surge,
+- "S: 1prec, 1pierce": 1 added range and 1 pierce together for 1 surge.
