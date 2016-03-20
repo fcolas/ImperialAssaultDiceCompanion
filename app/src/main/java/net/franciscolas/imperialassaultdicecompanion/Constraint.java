@@ -18,8 +18,15 @@ class DistanceConstraint extends Constraint {
 }
 
 class AttributeTestConstraint extends Constraint {
+    final int surge_level;
+    public AttributeTestConstraint() {
+        surge_level = 1;
+    }
+    public AttributeTestConstraint(int surge_level) {
+        this.surge_level = surge_level;
+    }
     public boolean eval(Outcome outcome) {
-        return outcome.surge >= 1;
+        return outcome.surge >= surge_level;
     }
 }
 
